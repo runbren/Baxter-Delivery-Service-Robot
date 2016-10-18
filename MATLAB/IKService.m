@@ -1,0 +1,34 @@
+function [JointCommand, IsValid]= IKService(X,Y)
+%ROS IKService interface for defining joint positions for a dynamic Y axis
+%position.
+    client = ...
+        rossvcclient('/ExternalTools/right/PositionKinematicsNode/IKService');
+
+    Posemsg = rosmessage('geometry_msgs/PoseStamped');
+    IKmsg = rosmessage('baxter_core_msgs/SolvePositionIKRequest');
+
+    Posemsg.Header.Seq = 0;
+    Posemsg.Header.FrameId = 'base';
+    Posemsg.Header.Stamp = rostime('now');
+    Posemsg.Pose.Position.X = X;
+    Posemsg.Pose.Position.Y = Y;
+    Posemsg.Pose.Position.Z = 0.485;
+
+    Posemsg.Pose.Orientation.X = -0.03;
+    Posemsg.Pose.Orientation.Y = 0.7;
+    Posemsg.Pose.Orientation.Z = 0.0;
+    Posemsg.Pose.Orientation.W = 0.7;
+
+    IKmsg.PoseStamp = Posemsg;
+    response = call(client,IKmsg);
+
+    jointState = response.Joints;
+    jointCmd = rosmessage('baxter_core_msgs/JointCommand');
+    jointCmd.Mode = 1;                      %Mode 1 is for a position command
+    jointCmd.Command = jointState.Position;
+    jointCmd.Names = jointState.Name;
+    
+    JointCommand = jointCmd;
+    IsValid = response.IsValid;
+
+end
