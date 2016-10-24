@@ -27,8 +27,32 @@ function elevatorButton()
     
     deltaY = (coordinates(1)-300)/1500;
     
+    %Move arm into pre-pressing positiong
+    [jointCmd, IsValid] = IKService(0.8 + IRData.Data/1000-20, -0.2 - deltaY);
+    controlRate = robotics.Rate(10);
+    if IsValid
+        for i=0:50
+            send(limbPub,jointCmd);
+            waitfor(controlRate);
+        end
+    else
+        disp('Not a valid coordinate')
+    end
+    
     %Move arm into pressing positiong
-    [jointCmd, IsValid] = IKService(0.8 + IRData, -0.2 - deltaY);
+    [jointCmd, IsValid] = IKService(0.8 + IRData.Data/1000, -0.2 - deltaY);
+    controlRate = robotics.Rate(10);
+    if IsValid
+        for i=0:50
+            send(limbPub,jointCmd);
+            waitfor(controlRate);
+        end
+    else
+        disp('Not a valid coordinate')
+    end
+    
+    %Move arm into viewing positiong
+    [jointCmd, IsValid] = IKService(0.8, -0.2);
     controlRate = robotics.Rate(10);
     if IsValid
         for i=0:50
