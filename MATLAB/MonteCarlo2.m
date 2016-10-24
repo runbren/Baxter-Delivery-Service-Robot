@@ -175,7 +175,7 @@ stop(velpub, velData)
 
 faceElevator(odomSub, estimatedPose, velpub, velData)
 
-elevatorButton(velpub, velData)
+elevatorButton()
 
 waitPosition(velpub, velData, odomSub)
 
