@@ -1,0 +1,9 @@
+bagFilePath = 'C:\Users\Owner\Documents\2016-09-12-13-20-38.bag';
+disp('Loading . . .')
+bag = rosbag(bagFilePath);
+disp('Complete')
+
+odomTopic = select(bag, 'Topic', '/odometry/filtered');
+scanTopic = select(bag, 'Topic', '/scan');
+cameraTopic = selc
+
